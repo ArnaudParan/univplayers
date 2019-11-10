@@ -1,4 +1,4 @@
-.TH UNIVPLAYERS "1" "November 2019" "univplayers $version" "User Commands"
+.TH UNIVPLAYERS "1" "November 2019" "univplayers 1.0.4" "User Commands"
 .SH NAME
 \fBunivplayers\fR \- utility to control media players via MPRIS
 .SH SYNOPSIS
