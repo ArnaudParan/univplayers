@@ -14,6 +14,7 @@ debug: $(OUTDIR)/debug/univplayers
 release: $(OUTDIR)/release/univplayers
 
 $(OBJDIR)/%.o: $(SDIR)/%.c $(INCLUDES)
+	install -d $(OBJDIR)
 	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 
 $(OUTDIR)/release/univplayers: $(OBJECTS) $(INCLUDES)
