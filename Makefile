@@ -15,20 +15,20 @@ debug: $(BINDIR)/debug/univplayers
 
 release: $(BINDIR)/release/univplayers
 
-$(OBJDIR)/%.o: %.c | $(OBJDIR)/
+$(OBJDIR)/%.o: %.c | $(OBJDIR)
 	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 
-$(BINDIR)/release/univplayers: $(OBJECTS) | $(BINDIR)/release/
+$(BINDIR)/release/univplayers: $(OBJECTS) | $(BINDIR)/release
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
-$(BINDIR)/debug/univplayers: $(OBJECTS) | $(BINDIR)/debug/
+$(BINDIR)/debug/univplayers: $(OBJECTS) | $(BINDIR)/debug
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
-$(OBJDIR)/:
+$(OBJDIR):
 	install -d $@
-$(BINDIR)/release/:
+$(BINDIR)/release:
 	install -d $@
-$(BINDIR)/debug/:
+$(BINDIR)/debug:
 	install -d $@
 
 .SUFFIXES: .o .c .h

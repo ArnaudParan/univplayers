@@ -1,0 +1,127 @@
+.TH UNIVPLAYERS "1" "November 2019" "univplayers $version" "User Commands"
+.SH NAME
+\fBunivplayers\fR \- utility to control media players via MPRIS
+.SH SYNOPSIS
+.TP
+\fBunivplayers\fR [\fIOPTION\fR] \fICOMMAND\fR
+.SH DESCRIPTION
+.RE
+\fBunivplayers\fR is a command line utility to control MPRIS-enabled media\&
+players. In addition to offering play/pause/stop control, \fBunivplayers\fR\&
+also offers previous/next track support, the ability to seek backward/forward\&
+in a track, and volume control.
+\fBunivplayers\fR also supports displaying metadata (e.g. artist/title/album) for the\&
+current track, and showing the status of the player.
+.PP
+Players that can be controlled using \fBunivplayers\fR include audacious, cmus,\&
+mopidy, mpd, quod libet, rhythmbox, vlc and xmms2. However, any player that implements\&
+the MPRIS interface specification should be able to be controlled using \fBunivplayers\fR.
+.SH OPTIONS
+.TP
+\fB\-p\fR, \fB\-\-player\fR=\fI\,NAME\/\fR
+The name or comma-separated list of the players to control (default: first available player)
+.TP
+\fB\-i\fR, \fB\-\-ignore\-player\fR=\fI\,NAME\/\fR
+The name or comma-separated list of the players to ignore
+.TP
+\fB\-f\fR, \fB\-\-format\fR=\fI\,FORMAT\/\fR
+A format string for printing properties and metadata
+.TP
+\fB\-F\fR, \fB\-\-follow\fR
+Block and output the updated query when it changes
+.TP
+\fB\-l\fR, \fB\-\-list\-all\fR
+List the names of running players that can be controlled
+.TP
+\fB\-a\fR, \fB\-\-all\-players\fR
+Apply command to all available players
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print this help, then exit
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+Print version number, then exit
+.SH COMMANDS
+.TP
+\fBstatus\fR
+Get the current status of the player
+.TP
+\fBplay\fR
+Command the player to play
+.TP
+\fBpause\fR
+Command the player to pause
+.TP
+\fBplay\-pause\fR
+Command the player to toggle between play/pause
+.TP
+\fBstop\fR
+Command the player to stop
+.TP
+\fBnext\fR
+Command the player to skip to the next track
+.TP
+\fBprevious\fR
+Command the player to skip to the previous track
+.TP
+\fBposition\fR [\fIOFFSET\fR][\fI+\fR|\fI\-\fR]
+Print the position of the current track in seconds. With \fIOFFSET\fR specified, seek to \fIOFFSET\fR seconds from the start of the current track.
+With the optional [\fI+\fR|\fI\-\fR] appended, seek forward/backward \fIOFFSET\fR seconds from the current position.
+.TP
+\fBvolume\fR [\fILEVEL\fR][\fI+\fR|\fI\-\fR]
+Print the player's volume scaled from 0.0 (0%) to 1.0 (100%). With \fILEVEL\fR specified, set
+the player's volume to \fILEVEL\fR. With the optional [\fI+\fR|\fI\-\fR] appended, increase/decrease the player's
+volume by \fILEVEL\fR.
+.TP
+\fBmetadata\fR [\fIKEY\fR]
+Print available metadata information for the current track. When \fIKEY\fR is specified, print the value of \fIKEY\fR.
+.TP
+\fBopen\fR [\fIURI\fR]
+Open the given \fIURI\fR in the player. The \fIURI\fR may be the name of a file or an external URL.
+.TP
+\fBshuffle\fR [{\fIOn\fR|\fIOff\fR}]
+Print the shuffle status of the player. With the shuffle status specified, set shuffle to either \fIOn\fR or \fIOff\fR.
+.TP
+\fBloop\fR [{\fINone\fR|\fITrack\fR|\fIPlaylist\fR}]
+Print the loop status of the player. With the loop status specified, set the loop status to either \fINone\fR to not loop, \fITrack\fR to loop the current track, or \fIPlaylist\fR to loop the current playlist.
+.TP
+\fBshuffle-player\fR
+Shuffle the player which is use by default between the available players. It prompts the new default player to stdout so that you could for example create a command like
+
+\fBnotify-send -a Univplayers "$(univplayers shuffle-player)"\fR
+
+it would shuffle and notify of the new player
+.SH FORMAT STRINGS
+A format string can be given with the \fB--format\fR argument to print properties and metadata in a particular format. Variable names between curly braces in the form of \fB{{\fR \fIVARIABLE\fR \fB}}\fR will be\&
+expanded to their values. The available variables are the names of the commands that print properties or any of the metadata keys that can be viewed with the \fBmetadata\fR command. The name of the player is also\&
+available with the \fBplayerName\fR variable.
+
+Several helper functions are available in the template language to transform expanded values which can be called in the form \fB{{\fR \fIHELPER\fR(\fIVARIABLE\fR) \fB}}\fR. The available helper functions are:
+.TP
+\fBlc\fR
+Convert the value to lowercase
+.TP
+\fBuc\fR
+Convert the value to uppercase
+.TP
+\fBduration\fR
+When called on a duration such as \fBposition\fR or \fBmpris:length\fR, convert the duration to \fBhh:mm:ss\fR form
+.SH EXAMPLES
+.TP
+To print the player name, playback status in lowercase, and position and length in human readable form:
+
+\fBunivplayers metadata --format '{{playerName}}: {{lc(status)}} {{duration(position)}}|{{duration(mpris:length)}}'\fR
+.TP
+To list the available players
+
+\fBunivplayers --list-all\fR
+.TP
+To shuffle play pause
+
+\fBunivplayers play-pause\fR
+
+\fBunivplayers -p spotify play-pause\fR
+
+\fBunivplayers -p spotify,chromium.instancexxxx play-pause\fR
+.TP
+.TP

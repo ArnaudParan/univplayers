@@ -160,15 +160,20 @@ void shuffle_default_player() {
 
     if (default_player == NULL) {
         set_default_player(players->val);
+        printf("%s\n", players->val + 23);
         goto RETURN;
     }
 
     for (it = players; it != NULL; it = it->next) {
         if (strcmp(it->val, default_player) == 0) {
-            if (it->next == NULL)
+            if (it->next == NULL) {
                 set_default_player(players->val);
-            else
+                printf("%s\n", players->val + 23);
+            }
+            else {
                 set_default_player(it->next->val);
+                printf("%s\n", it->next->val + 23);
+            }
             goto RETURN;
         }
     }
