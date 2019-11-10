@@ -1,6 +1,6 @@
 .DEFAULT_GOAL=release
 CC=gcc
-OUTDIR=bin
+BINDIR=bin
 OBJDIR=obj
 SDIR=src
 CFLAGS=-Wall -I./$(SDIR) -I/usr/include/glib-2.0/ -I/usr/lib/glib-2.0/include/
@@ -9,29 +9,38 @@ OBJECTS=$(OBJDIR)/argument_parsing.o $(OBJDIR)/main.o $(OBJDIR)/stlist.o $(OBJDI
 LIBS=-lglib-2.0 -lgio-2.0 -lm
 
 debug: CFLAGS += -DDEBUG -ggdb
-debug: $(OUTDIR)/debug/univplayers
+debug: $(BINDIR)/debug/univplayers
 
-release: $(OUTDIR)/release/univplayers
+release: $(BINDIR)/release/univplayers
 
-$(OBJDIR)/%.o: $(SDIR)/%.c $(INCLUDES)
-	install -d $(OBJDIR)
+$(OBJDIR)/%.o: $(SDIR)/%.c $(INCLUDES) $(OBJDIR)
 	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 
-$(OUTDIR)/release/univplayers: $(OBJECTS) $(INCLUDES)
-	install -d $(OUTDIR)/release
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+$(BINDIR)/release/univplayers: $(OBJECTS) $(INCLUDES) $(BINDIR)/release
+	$(CC) -o $@ $(OBJECTS) $(INCLUDES) $(CFLAGS) $(LIBS)
 
-$(OUTDIR)/debug/univplayers: $(OBJECTS) $(INCLUDES)
-	install -d $(OUTDIR)/debug
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+$(BINDIR)/debug/univplayers: $(OBJECTS) $(INCLUDES) $(BINDIR)/debug
+	$(CC) -o $@ $(OBJECTS) $(INCLUDES) $(CFLAGS) $(LIBS)
+
+$(OBJDIR):
+	install -d $(OBJDIR)
+$(BINDIR)/release:
+	install -d $(BINDIR)/release
+$(BINDIR)/debug:
+	install -d $(BINDIR)/debug
 
 default: release
 
 .PHONY: clean
+.PHONY: clean_all
 .PHONY: release
 .PHONY: debug
 .PHONY: all
 .PHONY: default
 
 clean:
-	rm -r $(OBJDIR)
+	rm -rf $(OBJDIR)
+
+clean_all:
+	rm -rf $(OBJDIR)
+	rm -rf $(BINDIR)
